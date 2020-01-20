@@ -2,14 +2,76 @@
 
 <html>
     <head>
-        <h1>Hello HTML</h1>
-        <script>
-        console.log('Hello JS')
-        </script>
-        <title></title>
+        <title>Hello HTML</title>
     </head>
 
     <body>
-       
+        <h1>HELLO</h1>
+        <div id='root'>
+            <div v-for='task in tasks'>
+                <input type='checkbox' v-model="task.status=='completed'" @click=toggleStatus(task)>
+                <label>{{task.description}}</label>
+                <button @click=removeTask(task)>x</button>
+            </div>
+            <h2>completed tasks</h2>
+            <ul>
+                <li v-for='task in filterTasks("completed")'>{{task.description}}</li>
+            </ul>
+            <h2>incomplete tasks</h2>
+            <ul>
+                <li v-for='task in filterTasks("incomplete")'>{{task.description}}</li>
+            </ul>
+            <input type='text'id='input' v-model='message'>
+            <button @click=addItem :disable='!message'>Add item</button>
+            <button @click=removeItem>Remove item</button>
+            <p>The value of this input is: {{message}}</p>
+            <p>Reversed :{{reverseMessage}}</p>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+        <script>
+            console.log('Hello JS') 
+
+            new Vue({
+                el:'#root',
+                data: {
+                    message:'hello',
+                    tasks:[
+                        {description:'eat',status:'incomplete'},
+                        {description:'sleep',status:'incomplete'}, 
+                        {description:'code',status:'completed'},
+                    ]
+                }, 
+                methods:{
+                    addItem(){
+                        if (this.message !=='') {
+                            this.tasks.push({description:this.message,status:'incomplete'});
+                            this.message='';
+                        }
+                    }, 
+                    removeItem(){
+                        this.tasks.pop()
+                    },
+                    filterTasks(statusInput){
+                        return this.tasks.filter(task=>task.status==statusInput)
+                    },
+                    toggleStatus(task){
+                        if (task.status=='completed'){
+                            task.status='incomplete'
+                        } else {
+                            task.status='completed'
+                        }
+                    },
+                    removeTask(task){
+                        this.tasks.splice(this.tasks.indexOf(task),1)
+                    }
+                },
+                computed: {
+                    reverseMessage(){
+                        return this.message.split('').reverse().join('')
+                    },
+            }
+            })   
+        </script>
+
     </body>
 </html>
